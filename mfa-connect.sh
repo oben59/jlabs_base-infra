@@ -1,22 +1,29 @@
 #!/bin/bash
 
+# NOTE
+# call the script like this to connect :
+# emulate bash -c 'source ~/dev/www/github/infra-jdxlabs/mfa-connect.sh'
+
 unset AWS_DEFAULT_REGION
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 unset AWS_SESSION_TOKEN
 
-if [[ $# -ne 1 ]]; then
-    echo "usage: $0 <current_env> (e.g. \`$0 jdxlabs\`)" > /dev/stderr
-    exit 127
-fi
+
+# if [[ $# -ne 1 ]]; then
+#     echo "usage: $0 <current_env> (e.g. \`$0 prod\`)" > /dev/stderr
+#     exit 127
+# fi
 
 MASTER_KEY_NAME=aws-jdxmaster
 TOTP_KEY=$TOTP_KEY_JDX_USER
 
-if [ "$1" == "prod" ]; then
+CURRENT_ENV=${1-'prod'}
+
+if [ "$CURRENT_ENV" == "prod" ]; then
     DISTANTACCOUNT="586212427949"
     ROLENAME="Administrator"
-elif [ "$1" == "dev" ]; then
+elif [ "$CURRENT_ENV" == "dev" ]; then
     DISTANTACCOUNT=""
     ROLENAME=""
 else
@@ -51,7 +58,6 @@ if [[ -z "$USERARN" ]]; then
     exit 128
 fi
 
-CURRENT_ENV=$1
 REGION="eu-west-1"
 ROLEARN="arn:aws:iam::$DISTANTACCOUNT:role/$ROLENAME"
 IAMUSER="$(basename $USERARN)"
