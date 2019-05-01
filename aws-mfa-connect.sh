@@ -18,16 +18,18 @@ unset AWS_SESSION_TOKEN
 MASTER_KEY_NAME=aws-jdxmaster
 TOTP_KEY=$TOTP_KEY_JDX_USER
 
-CURRENT_ENV=${1-'prod'}
+CURRENT_ENV=${1-'pp'}
 
-if [ "$CURRENT_ENV" == "prod" ]; then
+if [ "$CURRENT_ENV" == "pp" ]; then
     DISTANTACCOUNT="586212427949"
     ROLENAME="Administrator"
-elif [ "$CURRENT_ENV" == "dev" ]; then
+    ANSIBLE_CFG="./jlabs-pp-ansible.cfg"
+elif [ "$CURRENT_ENV" == "prod" ]; then
     DISTANTACCOUNT=""
     ROLENAME=""
+    ANSIBLE_CFG=""
 else
-    echo "$0 error: Please current env should be one of them : 'dev', 'prod'." > /dev/stderr
+    echo "$0 error: Please current env should be one of them : 'pp', 'prod'." > /dev/stderr
     exit 127
 fi
 
