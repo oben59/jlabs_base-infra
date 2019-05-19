@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # NOTE
 # call the script like this to connect :
 # emulate bash -c 'source ~/dev/www/github/infra-jdxlabs/mfa-connect.sh'
