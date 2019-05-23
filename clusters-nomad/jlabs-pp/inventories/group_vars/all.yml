@@ -1,7 +1,7 @@
 ---
 cluster_context: "clusters-nomad"
 env: "pp"
-target_name: "jdwsc-{{ env }}"
+target_name: "jlabs-{{ env }}"
 target_region: "eu-west-1"
 
 aws_account_id: 154040721022

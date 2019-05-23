@@ -21,10 +21,10 @@ cd terraform/$LAYER
 
 # connect to S3 terraform layer
 terraform init \
--backend-config "bucket=jdwsc-$ENV-ctn-eu-west-1-tfstate" \
--backend-config "key=$LAYER.jdwsc-$ENV-ctn-eu-west-1.tfstate" \
+-backend-config "bucket=jlabs-$ENV-ctn-eu-west-1-tfstate" \
+-backend-config "key=$LAYER.jlabs-$ENV-ctn-eu-west-1.tfstate" \
 -backend-config "region=eu-west-1" \
--backend-config "dynamodb_table=jdwsc-$ENV-ctn-eu-west-1-tfstate-lock" \
+-backend-config "dynamodb_table=jlabs-$ENV-ctn-eu-west-1-tfstate-lock" \
 -force-copy \
 && \
 terraform get -update

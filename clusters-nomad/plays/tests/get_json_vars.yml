@@ -6,7 +6,7 @@
   vars:
     # TMP for tests..
     secrets_dir: "{{ playbook_dir }}/../../secrets/{{ target_name }}-ctn-{{ target_region }}"
-    target_name: jdwsc-pp
+    target_name: jlabs-pp
     target_region: eu-west-1
     nomad:
       svc_api:

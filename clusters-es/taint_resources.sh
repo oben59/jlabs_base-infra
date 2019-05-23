@@ -5,7 +5,7 @@ if [[ $# -ne 4 ]]; then
     exit 127
 fi
 
-TEAM=jdwsc
+TEAM=jlabs
 
 if [ "$1" == "pp" ]; then
     ENV="pp"

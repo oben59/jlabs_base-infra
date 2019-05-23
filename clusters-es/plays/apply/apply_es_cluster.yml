@@ -1,4 +1,4 @@
-# ansible-playbook apply_es_cluster.yml -e target_name=jdwsc-pp -e target_region=eu-west-1
+# ansible-playbook apply_es_cluster.yml -e target_name=jlabs-pp -e target_region=eu-west-1
 ---
 - hosts: "{{ target|default('es_instances') }}"
   become: yes

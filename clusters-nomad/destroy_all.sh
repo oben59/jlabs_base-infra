@@ -17,5 +17,5 @@ while true; do
 done
 
 # (/!\ then, remove all consul secrets)
-# rm -rf ../secrets/jdwsc-pp-ctn-eu-west-1/consul/tls/* (Y)
+# rm -rf ../secrets/jlabs-pp-ctn-eu-west-1/consul/tls/* (Y)
 
