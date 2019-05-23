@@ -1,0 +1,27 @@
+---
+- hosts: "{{ target | default('all:!bastion') }}"
+  any_errors_fatal: true
+  become: yes
+
+  tasks:
+# iptables -D INPUT -s <ip> -p tcp --destination-port 9100 -j DROP
+    - iptables:
+        action: "append"
+        flush: "yes"
+        chain: "INPUT"
+        source: "{{ item }}"
+        protocol: "tcp"
+        destination_port: 9100
+        jump: "DROP"
+      with_items: "{{ monitor_blocked_ips }}"
+
+# iptables -D INPUT -s <ip> -p tcp --destination-port 9172 -j DROP
+    - iptables:
+        action: "append"
+        flush: "yes"
+        chain: "INPUT"
+        source: "{{ item }}"
+        protocol: "tcp"
+        destination_port: 9172
+        jump: "DROP"
+      with_items: "{{ monitor_blocked_ips }}"

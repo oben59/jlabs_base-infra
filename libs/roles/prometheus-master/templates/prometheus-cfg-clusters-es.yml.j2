@@ -1,0 +1,107 @@
+---
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  external_labels:
+    monitor: 'prometheus-master'
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+scrape_configs:
+  - job_name: node_exporters
+    consul_sd_configs:
+      - server: 'localhost:8500'
+    relabel_configs:
+
+      - source_labels: [__meta_consul_tags]
+        regex: .*,monitor-node,.*
+        action: keep
+
+      - source_labels: [__meta_consul_service]
+        target_label: job
+
+      - source_labels: [__meta_consul_node]
+        target_label: node
+
+      - source_labels: [__meta_consul_node]
+        target_label: inventory_hostname
+
+      - source_labels: [__meta_consul_tags]
+        target_label: consul_tags
+
+  - job_name: es_exporters
+
+    basic_auth:
+      username: metrics
+      password: metrics
+
+    consul_sd_configs:
+      - server: 'localhost:8500'
+
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        regex: .*,monitor-es,.*
+        action: keep
+
+      - source_labels: [__meta_consul_service]
+        target_label: job
+
+      - source_labels: [__meta_consul_node]
+        target_label: node
+
+      - source_labels: [__meta_consul_node]
+        target_label: inventory_hostname
+
+      - source_labels: [__meta_consul_tags]
+        target_label: consul_tags
+
+      - source_labels: [__meta_consul_tags]
+        regex: '.*,metrics_path=([^,]+),.*'
+        replacement: '${1}'
+        target_label: __metrics_path__
+
+  # - job_name: kube_cadvisor
+  #   scrape_interval: 10s
+  #   scrape_timeout: 10s
+  #   scheme: https
+
+  #   bearer_token_file: {{ prometheus_unarchive_dir }}/prometheus/kube-bearer.token
+  #   tls_config:
+  #     ca_file: {{ prometheus_unarchive_dir }}/prometheus/kube-ca.cert
+
+  #   kubernetes_sd_configs:
+  #     - role: node
+  #       api_server: "https://{{ kube_api_hostname }}:443"
+  #       bearer_token_file: {{ prometheus_unarchive_dir }}/prometheus/kube-bearer.token
+  #       tls_config:
+  #         ca_file: {{ prometheus_unarchive_dir }}/prometheus/kube-ca.cert
+
+  #   relabel_configs:
+  #     - action: labelmap
+  #       regex: __meta_kubernetes_node_label_(.+)
+  #     # Only for Kubernetes ^1.7.3.
+  #     # See: https://github.com/prometheus/prometheus/issues/2916
+  #     - target_label: __address__
+  #       replacement: "{{ kube_api_hostname }}:443"
+
+  #     - source_labels: [__meta_kubernetes_node_name]
+  #       regex: (.+)
+  #       target_label: __metrics_path__
+  #       replacement: /api/v1/nodes/${1}/proxy/metrics
+
+  #   metric_relabel_configs:
+  #     - action: replace
+  #       source_labels: [id]
+  #       regex: '^/machine\.slice/machine-rkt\\x2d([^\\]+)\\.+/([^/]+)\.service$'
+  #       target_label: rkt_container_name
+  #       replacement: '${2}-${1}'
+  #     - action: replace
+  #       source_labels: [id]
+  #       regex: '^/system\.slice/(.+)\.service$'
+  #       target_label: systemd_service_name
+  #       replacement: '${1}'
+

@@ -1,0 +1,5 @@
+
+[monitor]
+{% for instance in all_terraform_outputs.monitor_instances.value %}
+monitor-{{ loop.index0 }}
+{% endfor %}

@@ -1,0 +1,36 @@
+---
+- hosts: "{{ target | default('nomad-workers') }}"
+  any_errors_fatal: true
+  become: yes
+  tags:
+    - crontab
+
+  tasks:
+    - file:
+        path: "/root/scripts"
+        state: directory
+        mode: 0644
+
+    - copy:
+        src: ../../files/scripts/docker-clean.sh
+        dest: /root/scripts/docker-clean.sh
+        mode: 0755
+
+    - cron:
+        name: "Daily clean Docker files"
+        minute: "0"
+        hour: "*"
+        job: "/bin/bash /root/scripts/docker-clean.sh"
+
+    - cron:
+        name: "Periodically Restart Node Exporter, to flush the RAM"
+        minute: "0"
+        hour: "9"
+        weekday: "1-5"
+        job: "/bin/systemctl restart node_exporter.service"
+
+    - cron:
+        name: "Nomad Garbage Collector"
+        minute: "*/3"
+        hour: "*"
+        job: "/usr/bin/curl -XPUT http://127.0.0.1:4646/v1/system/gc"

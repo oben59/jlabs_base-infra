@@ -1,0 +1,16 @@
+# ansible-playbook clean_iptables.yml -e target=nomad-worker-2
+---
+- hosts: "{{ target|default('nomad-workers') }}"
+  become: yes
+
+  tasks:
+
+    - name: copy script to clean iptables
+      copy:
+        src: "{{ playbook_dir }}/../../files/scripts/clean-iptables.sh"
+        dest: "/root/clean-iptables.sh"
+        mode: 0755
+
+    - name: clean iptables
+      shell: >-
+        /root/clean-iptables.sh >> /root/clean-iptables.log

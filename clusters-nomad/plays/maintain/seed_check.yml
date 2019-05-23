@@ -1,0 +1,14 @@
+---
+#- hosts: "{{ target|default('all:!bastion:!maintainer') }}"
+- hosts: "{{ target|default('all') }}"
+  become: yes
+  tasks:
+    - shell: >-
+        which htop
+      register: res
+      changed_when: False
+      # args:
+      #   warn: no
+
+    - debug:
+        msg : "{{ res.stdout }}"

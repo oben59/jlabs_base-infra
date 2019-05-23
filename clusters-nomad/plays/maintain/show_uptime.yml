@@ -1,0 +1,11 @@
+- hosts: nomad-workers
+
+  tasks:
+    - name: show uptime
+      shell: >-
+        uptime
+      register: uptime
+      changed_when: false
+
+    - debug:
+        msg: "{{ uptime.stdout }}"

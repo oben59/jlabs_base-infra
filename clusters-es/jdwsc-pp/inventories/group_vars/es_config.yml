@@ -1,0 +1,14 @@
+---
+cluster_name: "pp"
+es_url: "http://es.{{ target_name }}-{{ target_region }}.jdxlabs.com:9200"
+
+es_plugins:
+  - name: "analysis-icu"
+  - name: "repository-s3"
+
+es_user_admin: "elastic"
+es_pass_admin: "8nZQnWsbV68L"
+
+es_user: "user"
+es_pass: "qRq6Y4pCPMf4"
+es_prefix_allowed: '[ "pp_*" ]'

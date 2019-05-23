@@ -1,0 +1,19 @@
+---
+- hosts: logstore
+
+#- hosts: monitor
+#  become: yes
+#  tags:
+#    - tsdb
+#  roles:
+#    - influxdb
+
+- hosts: monitor
+  become: yes
+  tags:
+    - prometheus
+  vars_files:
+    - "{{ secrets_dir }}/grafana.yml"
+  roles:
+    - prometheus-master-2.x
+    - grafana

@@ -1,0 +1,47 @@
+---
+- assert:
+    that:
+      - "{{ lookup('env', 'AWS_SESSION_TOKEN') != '' }}"
+      - "{{ lookup('env', 'AWS_DEFAULT_REGION') != '' }}"
+      - "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') != '' }}"
+      - "{{ lookup('env', 'AWS_ACCESS_KEY_ID') != '' }}"
+      - "{{ layer_name is defined }}"
+      - "{{ target_name is defined }}"
+      - "{{ target_region is defined }}"
+    msg: "Missing at least an environment var"
+
+- set_fact:
+    target_full_name: "{{ target_name }}-{{ target_region }}"
+
+- name: create temporary build directory
+  tempfile:
+    state: directory
+    suffix: build
+  register: work_dir
+
+- name: Simple GET operation
+  s3:
+    bucket: "{{ target_full_name }}-tfstate"
+    object: "{{ layer_name }}.{{ target_full_name }}.tfstate"
+    dest: "{{ work_dir.path }}/{{ layer_name }}.{{ target_full_name }}.tfstate"
+    mode: get
+    region: "{{ target_region }}"
+
+- shell: >-
+    terraform output
+    -json
+    -state={{ work_dir.path }}/{{ layer_name }}.{{ target_full_name }}.tfstate
+  register: raw_all_tf_outputs
+
+- set_fact:
+    all_tf_outputs: >-
+      {{
+        all_tf_outputs|default({})
+        |combine({
+          (layer_name+'.'+target_full_name): raw_all_tf_outputs.stdout|from_json
+        })
+      }}
+
+- file:
+    path: "{{ work_dir.path }}"
+    state: absent

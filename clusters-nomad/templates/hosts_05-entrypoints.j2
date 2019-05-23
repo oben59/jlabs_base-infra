@@ -1,0 +1,12 @@
+
+[entries]
+{% for instance in all_terraform_outputs.entry_instance.value %}
+entry-{{ loop.index0 }}
+{% endfor %}
+
+{#
+[monitor-entries]
+{% for instance in all_terraform_outputs.monitor_entry_instance.value %}
+monitor-entry-{{ loop.index0 }}
+{% endfor %}
+#}

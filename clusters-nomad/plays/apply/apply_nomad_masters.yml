@@ -1,0 +1,19 @@
+---
+- hosts: logstore
+
+- hosts: nomad-masters
+  become: yes
+  any_errors_fatal: true
+  tags:
+    - nomad-server
+    - nomad
+  roles:
+    - nomad-server
+
+- hosts: nomad-masters
+  any_errors_fatal: true
+  become: yes
+  tags:
+    - metrics
+  roles:
+    - prometheus-node

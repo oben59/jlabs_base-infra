@@ -1,0 +1,12 @@
+---
+- hosts: "{{ target | default('nomad-masters,nomad-workers') }}"
+  any_errors_fatal: true
+  become: yes
+
+  tasks:
+
+    - name: restart node_exporter
+      service:
+        name: node_exporter
+        state: restarted
+        enabled: yes

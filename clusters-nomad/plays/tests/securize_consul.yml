@@ -1,0 +1,29 @@
+
+# ansible-playbook securize_consul.yml
+# http://blog.wescale.fr/2017/10/12/ansibled-consul-securise/
+# https://github.com/WeScale/consul-role
+---
+- hosts: "{{ target|default('all:!bastion') }}"
+  become: yes
+
+  vars:
+    secrets_dir: "{{ inventory_dir }}/../../secrets/{{ target_name }}-ctn-{{ target_region }}"
+
+  # tasks:
+  #   - name: Set Config TLS directory
+  #     file:
+  #       path: /etc/consul.d/tls
+  #       state: directory
+  #       mode: 0755
+
+  #   - name: Set CER for Consul root
+  #     copy:
+  #       src: "{{ secrets_dir }}/consul-root.cer"
+  #       dest: /etc/consul.d/tls/consul-root.cer
+  #       mode: 0640
+
+  #   - name: Set CER for Consul nodes
+  #     copy:
+  #       src: "{{ secrets_dir }}/consul-node.cer"
+  #       dest: /etc/consul.d/tls/consul-node.cer
+  #       mode: 0640

@@ -1,0 +1,10 @@
+---
+ansible_cache_dir: "/tmp"
+prometheus_unarchive_dir: "/opt"
+
+prometheus_version: "1.8.2"
+
+# fine tuning parameters
+prometheus_storage_retention: "360h0m0s"
+prom_nomad_cfg_scrape_interval: "1m"
+prom_nomad_cfg_evaluation_interval: "1m"

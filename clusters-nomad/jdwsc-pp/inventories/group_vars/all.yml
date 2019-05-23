@@ -1,0 +1,59 @@
+---
+cluster_context: "clusters-nomad"
+env: "pp"
+target_name: "jdwsc-{{ env }}"
+target_region: "eu-west-1"
+
+aws_account_id: 154040721022
+
+nomad_dc_name: "pp"
+nomad_server_dc_name: "{{ nomad_dc_name }}"
+nomad_worker_dc_name: "{{ nomad_dc_name }}"
+
+docker_tag: "latest-{{ env }}"
+
+ansible_user: admin
+secrets_dir: "{{ inventory_dir }}/../../../secrets/{{ target_name }}-ctn-{{ target_region }}"
+
+root_dir: "/root"
+
+dns_public_zone_id: "ZCASNQG6GCJV9"
+dns_public_domain: "svc.{{ target_name }}-{{ target_region }}.jdxlabs.com"
+dns_internal_domain: "svc.{{ target_name }}-{{ target_region }}.internal.jdxlabs.com"
+
+# needed for logstore and the nodes connected to rsyslog
+graylog_input_syslogudp_port: 5001
+graylog_udp_destination: >-
+  @{{ hostvars[groups['logstore'][0]].ansible_default_ipv4.address }}:{{ graylog_input_syslogudp_port}};RSYSLOG_SyslogProtocol23Format
+
+consul_dc_name: "dc1"
+consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
+
+consul_acl_policy: >-
+  agent "" { policy = "write" }
+  node "{{ inventory_hostname }}" { policy = "write" }
+  node "" { policy = "read" }
+  key "" { policy = "write" }
+  service "" { policy = "write" }
+
+consul_ansible_master_group_name: "consul-servers-bootstrap"
+
+# Prometheus
+prom_cluster_name: "{{ nomad_dc_name }}"
+prom_role_name: "{{ inventory_hostname | regex_replace('^(?P<role>.+)-(?P<nb>\\d+)$', '\\g<role>') }}"
+
+# Vault
+vault_user_name: "vault"
+vault_token: "{{ lookup('file', secrets_dir+'/vault_token') }}"
+vault_addr: "http://vault.service.dc1.consul:8200"
+
+# tls_consul_dir: "/etc/consul.d/tls"
+# tls_cert_file: "{{ tls_consul_dir }}/consul-node.cer"
+# tls_key_file: "{{ tls_consul_dir }}/consul-node.key"
+# tls_client_ca_file: "{{ tls_consul_dir }}/consul-root.cer"
+
+vault_env:
+  VAULT_ADDR: "{{ vault_addr }}"
+  # VAULT_CLIENT_CERT: "{{ tls_cert_file }}"
+  # VAULT_CLIENT_KEY: "{{ tls_key_file }}"
+  # VAULT_CAPATH: "{{ tls_client_ca_file }}"

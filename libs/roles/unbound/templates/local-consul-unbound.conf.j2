@@ -1,0 +1,31 @@
+server:
+ interface: 127.0.0.1
+ logfile: /var/log/unbound/unbound.log
+
+ # Consul does not support DNSSEC
+ domain-insecure: "{{ consul_dc_name }}.consul"
+ do-ip4: yes
+ do-ip6: no
+ do-udp: yes
+ do-tcp: yes
+
+ verbosity: 1
+
+ # for Docker container
+ access-control: 172.17.0.0/16 allow
+
+ hide-identity: yes
+ hide-version: yes
+ harden-glue: yes
+ use-caps-for-id: yes
+ do-not-query-localhost: no
+
+forward-zone:
+  name: "{{ consul_dc_name }}.consul"
+  forward-addr: "127.0.0.1@8600"
+
+{% for private_zone in aws_private_zones %}
+forward-zone:
+  name: "{{ private_zone }}"
+  forward-addr: "{{ default_aws_dns_raw.stdout }}"
+{% endfor %}

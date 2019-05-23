@@ -1,0 +1,35 @@
+# ansible-playbook plays/maintain/nomad_push_jobs.yml -e job=svc-api/svc-api
+---
+- hosts: "{{ target | default('nomad-masters') }}"
+  any_errors_fatal: true
+  become: yes
+
+  vars_files:
+    - "{{ secrets_dir }}/docker-env/commons.yml"
+  #   - "{{ secrets_dir }}/docker-env/node-config.yml"
+
+  tasks:
+    # - name: format docker config parameters
+    #   set_fact:
+    #     node_config: "{{ node_config | to_json | regex_replace('\"', '\\\"') | regex_replace(', ', ',') | regex_replace(': ', ':') }}"
+    #     node_debug: "{{ node_debug | to_json | regex_replace('\"', '\\\"') | regex_replace(', ', ',') | regex_replace(': ', ':') }}"
+
+    - name: push nomad jobs folder
+      file:
+        path: "/root/nomad/jobs"
+        state: directory
+        force: yes
+
+    - name: push nomad jobs sub folders
+      file:
+        path: "/root/nomad/jobs/{{ item }}"
+        state: directory
+        force: yes
+      with_items: "{{ nomad_jobs_dirs }}"
+      when: job is not defined
+
+    - name: push nomad jobs files
+      template:
+        src: "{{ playbook_dir }}/../../nomad/jobs/{{ item }}.hcl.j2"
+        dest: "/root/nomad/jobs/{{ item }}.hcl"
+      with_items: "{{ job | default(nomad_active_jobs) }}"

@@ -1,0 +1,4 @@
+# BEGIN BASTION
+[bastion]
+BASTION_AWS
+# END BASTION

@@ -1,0 +1,14 @@
+
+[es_instances_masters]
+{% for instance in all_terraform_outputs.es_instance_masters_list.value %}
+es-instance-master-{{ loop.index0 }}
+{% endfor %}
+
+[es_instances_workers]
+{% for instance in all_terraform_outputs.es_instance_workers_list.value %}
+es-instance-worker-{{ loop.index0 }}
+{% endfor %}
+
+[es_instances:children]
+es_instances_masters
+es_instances_workers

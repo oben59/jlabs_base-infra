@@ -1,0 +1,46 @@
+job "stress-test" {
+  datacenters = ["{{ nomad_dc_name }}"]
+  type = "batch"
+
+  group "workers" {
+    count = 1
+
+    restart {
+      attempts = 10
+      delay = "10s"
+      interval = "5m"
+      mode = "delay"
+    }
+
+    task "stress-test" {
+      driver = "docker"
+
+      config {
+        image = "{{ aws_account_id }}.dkr.ecr.{{ target_region }}.amazonaws.com/stress-test:{{ docker_tag }}"
+        force_pull = true
+        command = "/usr/bin/stress"
+        args = ["-c", "2"]
+        dns_servers = ["172.17.0.1"]
+      }
+
+      resources {
+        cpu    = 100 # MHz
+        memory = 100 # MB
+        network {
+          mbits = 10
+          port "web" {}
+        }
+      }
+
+      vault {
+        policies = ["nomad-jobs"]
+      }
+
+      env {
+        "NODE_ENV" = "{{ node_env }}"
+        "NODE_PREFIX" = "{{node_prefix }}"
+        "NODE_DEBUG" = "{{ node_debug }}"
+      }
+    }
+  }
+}

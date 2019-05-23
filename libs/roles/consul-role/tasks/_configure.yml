@@ -1,0 +1,90 @@
+---
+- name: create consul data directory
+  file:
+    path: "{{ consul_data_dir }}"
+    state: directory
+    mode: 0750
+    owner: "{{ consul_user_name }}"
+    group: "{{ consul_user_name }}"
+
+- name: create consul config directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0750
+    owner: "root"
+    group: "{{ consul_user_name }}"
+  with_items:
+    - "{{ consul_config_dir }}"
+    - "{{ consul_config_dir }}/tls"
+
+- name: generate root certificate locally
+  include_tasks: "_local_ca_certificate.yml"
+  delegate_to: localhost
+  run_once: true
+  become: no
+
+- name: root certificate upload
+  copy:
+    src: "{{ consul_local_tls_dir }}/consul-root.cer"
+    dest: "{{ consul_config_dir }}/tls/consul-root.cer"
+    mode: 0640
+    owner: "root"
+    group: "{{ consul_user_name }}"
+
+- name: create node cert signing
+  shell: >-
+    openssl req
+    -newkey rsa:4096
+    -nodes
+    -subj "{{ consul_node_cert_subj }}"
+    -out {{ consul_config_dir }}/tls/consul-node.csr
+    -keyout {{ consul_config_dir }}/tls/consul-node.key
+    && chown root:{{ consul_user_name}} {{ consul_config_dir }}/tls/consul-node.*
+    && chmod 640 {{ consul_config_dir }}/tls/consul-node.*
+  args:
+    warn: no
+    chdir: "{{ consul_config_dir }}/tls"
+    creates: "{{ consul_config_dir }}/tls/consul-node.csr"
+
+- name: get certificate signing request
+  fetch:
+    src: "{{ consul_config_dir }}/tls/consul-node.csr"
+    dest: "{{ consul_node_tls_workdir }}/consul-node.csr"
+    flat: yes
+
+- name: generate node certificate from csr
+  include_tasks: _local_node_certificate.yml
+  delegate_to: localhost
+  become: no
+
+- name: upload certificate
+  copy:
+    src: "{{ consul_node_tls_workdir }}/consul-node.cer"
+    dest: "{{ consul_config_dir }}/tls/consul-node.cer"
+    owner: "root"
+    group: "{{ consul_user_name }}"
+    mode: 0640
+  notify: restart consul
+
+- name: generate agent configuration
+  template:
+    src: "config.json.j2"
+    dest: "{{ consul_config_dir }}/config.json"
+    owner: root
+    group: "{{ consul_user_name }}"
+    mode: 0640
+  notify: restart consul
+
+- name: validate agent configuration
+  shell: >-
+    consul validate {{ consul_config_dir }}/config.json
+  change_when: false
+
+- name: generate default variables
+  template:
+    src: "{{ consul_mode }}/defaults.j2"
+    dest: "/etc/default/consul"
+    group: "{{ consul_user_name }}"
+    mode: 0640
+  notify: restart consul

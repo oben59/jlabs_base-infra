@@ -1,0 +1,86 @@
+# ansible-playbook plays/apply/apply.yml -e layer_name=04-elasticsearch
+- hosts: localhost
+  become: no
+  gather_facts: no
+
+  pre_tasks:
+    - assert:
+        that:
+          - "{{ lookup('env', 'AWS_SESSION_TOKEN') != '' }}"
+          - "{{ lookup('env', 'AWS_DEFAULT_REGION') != '' }}"
+          - "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') != '' }}"
+          - "{{ lookup('env', 'AWS_ACCESS_KEY_ID') != '' }}"
+          - "{{ layer_name is defined }}"
+          - "{{ target_name is defined }}"
+          - "{{ target_region is defined }}"
+        msg: "Missing at least an environment var"
+
+    - file:
+        path: "{{ playbook_dir }}/../../{{ target_name }}/inventories"
+        state: directory
+        mode: 0755
+
+    - set_fact:
+        target_full_name: "{{ target_name }}-{{ target_region }}"
+
+    - set_fact:
+        tf_common_vars: >-
+          -var-file={{ playbook_dir }}/../../terraform/{{ target_full_name }}.tfvars
+          -var=target_name={{ target_name }}
+          -var=target_region={{ target_region }}
+
+  tasks:
+    - name: terraform plan
+      shell: >-
+        rm -rf {{ playbook_dir }}/../../terraform/{{ layer_name }}/.terraform
+        &&
+        terraform init
+        -backend-config "bucket={{ target_full_name }}-tfstate"
+        -backend-config "key={{ layer_name }}.{{ target_full_name }}.tfstate"
+        -backend-config "region={{ target_region }}"
+        -backend-config "dynamodb_table={{ target_full_name }}-tfstate-lock"
+        -force-copy
+        &&
+        terraform get -update
+        &&
+        terraform plan {{ tf_common_vars }}
+      args:
+        chdir: "{{ playbook_dir }}/../../terraform/{{ layer_name }}"
+        warn: no
+      register: tf_plan
+
+    - pause:
+        prompt: |-
+          ############### READ CAREFULLY
+
+          {{ tf_plan.stdout }}
+
+          Type 'apply' if you want to continue
+      register: prompted
+      when: not (auto_apply|default(false))
+
+    - meta: end_play
+      when:
+        - not (auto_apply|default(false))
+        - prompted is defined and prompted.user_input != 'apply'
+
+    - name: terraform apply
+      shell: >-
+        terraform apply -auto-approve {{ tf_common_vars }}
+      args:
+        chdir: "{{ playbook_dir }}/../../terraform/{{ layer_name }}"
+
+    - include: "{{ playbook_dir }}/../../../libs/playbook-inc/build-bastion.yml"
+      when: layer_name == '02-bastion'
+
+    - include: "{{ playbook_dir }}/../../../libs/playbook-inc/build-anything-but-bastion.yml"
+      when: layer_name not in ['01-landscape', '02-bastion']
+
+    - name: Checking for layer-specific tasks
+      stat:
+        path: "{{ playbook_dir }}/../../terraform/{{ layer_name }}/deploy-tasks.yml"
+      register: deploy_tasks_file
+
+    - name: Including layer-specific tasks
+      include: "{{ playbook_dir }}/../../terraform/{{ layer_name }}/deploy-tasks.yml"
+      when: deploy_tasks_file.stat.exists

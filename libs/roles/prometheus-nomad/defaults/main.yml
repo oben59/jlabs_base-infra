@@ -1,0 +1,4 @@
+---
+ansible_cache_dir: "/tmp"
+
+nomad_exporter_version: "latest"

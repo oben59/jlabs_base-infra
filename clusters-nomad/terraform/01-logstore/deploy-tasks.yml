@@ -1,0 +1,15 @@
+---
+- blockinfile:
+    path: "{{ playbook_dir }}/../../{{ target_name }}-ssh.cfg"
+    create: yes
+    marker: '# {mark} LOGSTORE'
+    insertafter: "# END BASTION"
+    block: |
+      {% for instance in all_terraform_outputs.logstore_instances.value %}
+      Host logstore-{{ loop.index0 }} {{ instance }}
+        Hostname {{ instance }}
+        StrictHostKeyChecking no
+        ProxyCommand ssh -t -F ./{{ target_name }}-ssh.cfg -W %h:%p BASTION_AWS
+        User admin
+        IdentityFile ~/.ssh/{{ target_name }}-aws-bastion
+      {% endfor %}

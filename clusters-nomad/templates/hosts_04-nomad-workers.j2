@@ -1,0 +1,5 @@
+
+[nomad-workers]
+{% for instance in all_terraform_outputs.nomad_workers_instances.value %}
+nomad-worker-{{ loop.index0 }}
+{% endfor %}

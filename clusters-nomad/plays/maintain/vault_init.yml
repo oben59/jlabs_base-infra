@@ -1,0 +1,115 @@
+---
+- hosts: "{{ target | default('nomad-master-0') }}"
+  become: yes
+  tasks:
+    - pause:
+        prompt: |-
+          Are you sure ?
+          Type 'yes' if you want to continue
+      register: p1
+
+    - meta: end_play
+      when:
+        - p1 is defined and p1.user_input != 'yes'
+
+    - name: Remove Vault keys in Consul
+      shell: >-
+        consul kv delete -recurse vault/
+
+    - name: Define needed variables
+      set_fact:
+        vault_env: "{{ vault_env|combine({'VAULT_ADDR': 'http://{{ inventory_hostname }}.node.dc1.consul:8200'}) }}"
+
+    - name: Restart Vault
+      systemd:
+        name: "{{ vault_user_name }}"
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+    - pause:
+        seconds: 3
+
+    - name: Vault Init
+      command: vault init
+      register: keys
+      environment: "{{ vault_env }}"
+    - debug:
+        msg: "{{ keys.stdout }}"
+
+    - pause:
+        prompt: |-
+          Did you copy it on 1Password ?
+          Press any key when it's done
+      register: prompted
+
+    - pause:
+        prompt: |-
+          Enter the first key
+      register: key1
+
+    - pause:
+        prompt: |-
+          Enter the second key
+      register: key2
+
+    - pause:
+        prompt: |-
+          Enter the third key
+      register: key3
+
+    - pause:
+        prompt: |-
+          Enter the root token
+      register: root_token
+
+- hosts: localhost
+  become: no
+  tasks:
+    - name: Define needed variables
+      set_fact:
+        vault_token: "{{ hostvars[target|default('nomad-master-0')].root_token.user_input }}"
+
+    - name: Save Vault token locally in secrets
+      template:
+        src: "{{ playbook_dir }}/../../templates/vault_token.j2"
+        dest: "{{ playbook_dir }}/../../../secrets/{{ target_name }}-ctn-{{ target_region }}/vault_token"
+
+- hosts: "nomad-masters"
+  become: yes
+  tasks:
+    - name: Define needed variables
+      set_fact:
+        vault_env: "{{ vault_env|combine({'VAULT_ADDR': 'http://{{ inventory_hostname }}.node.dc1.consul:8200'}) }}"
+
+    # - debug:
+    #     msg: "key1 : {{ hostvars[target|default('nomad-master-0')].key1.user_input }}"
+    # - debug:
+    #     msg: "key2 : {{ hostvars[target|default('nomad-master-0')].key2.user_input }}"
+    # - debug:
+    #     msg: "key3 : {{ hostvars[target|default('nomad-master-0')].key3.user_input }}"
+    # - debug:
+    #     msg: "root_token : {{ hostvars[target|default('nomad-master-0')].root_token.user_input }}"
+
+    - name: Vault Unseal 1
+      command: "vault unseal {{ hostvars[target|default('nomad-master-0')].key1.user_input }}"
+      environment: "{{ vault_env }}"
+
+    - name: Vault Unseal 2
+      command: "vault unseal {{ hostvars[target|default('nomad-master-0')].key2.user_input }}"
+      environment: "{{ vault_env }}"
+
+    - name: Vault Unseal 3
+      command: "vault unseal {{ hostvars[target|default('nomad-master-0')].key3.user_input }}"
+      environment: "{{ vault_env }}"
+
+    - name: Vault Auth
+      command: "vault auth {{ hostvars[target|default('nomad-master-0')].root_token.user_input }}"
+      environment: "{{ vault_env }}"
+
+    - name: Vault Status
+      command: "vault status {{ hostvars[target|default('nomad-master-0')].root_token.user_input }}"
+      register: res
+      environment: "{{ vault_env }}"
+
+    - debug:
+        msg: "{{ res.stdout }}"

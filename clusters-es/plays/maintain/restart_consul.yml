@@ -1,0 +1,10 @@
+---
+- hosts: "{{ target|default('es-instance-worker-2') }}"
+  become: yes
+
+  tasks:
+    - name: restart consul
+      service:
+        name: consul
+        state: restarted
+        enabled: yes

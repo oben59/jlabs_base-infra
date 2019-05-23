@@ -1,0 +1,16 @@
+---
+- hosts: all
+
+- hosts: entries
+  become: yes
+  roles:
+    - role: traefik
+
+# - hosts: monitor-entries
+#   become: yes
+#   vars:
+#     traefik_prefix: "traefik-int"
+#   roles:
+#     - role: traefik
+
+

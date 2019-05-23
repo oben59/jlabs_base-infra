@@ -1,0 +1,8 @@
+galaxy_info:
+  author: Jérôme Devoucoux
+  description: Consul from Hashicorp
+  company: Jin
+  license: GPLv3
+  min_ansible_version: 2.4
+  galaxy_tags: []
+dependencies: []

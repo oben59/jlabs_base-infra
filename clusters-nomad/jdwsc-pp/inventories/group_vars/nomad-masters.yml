@@ -1,0 +1,16 @@
+---
+nomad_active_jobs:
+  - "svc-example/svc-example"
+  - "system/metrics-nomad"
+  #- "system/metrics-cadvisor"
+  #- "system/stress-test"
+
+nomad_jobs_dirs:
+  - svc-example
+  - system
+
+nomad:
+  svc_example:
+    count: 1
+    cpu: 100
+    memory: 200

@@ -1,0 +1,8 @@
+---
+cluster_context: "clusters-es"
+target_name: jdwsc-pp
+target_region: eu-west-1
+
+prometheus_version: "1.6.3" # TODO: needs to be tested before upgrade..
+
+secrets_dir: "{{ inventory_dir }}/../../../secrets/{{ target_name }}-ctn-{{ target_region }}"

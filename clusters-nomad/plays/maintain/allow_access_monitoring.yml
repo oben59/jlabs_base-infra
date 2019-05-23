@@ -1,0 +1,9 @@
+---
+- hosts: BASTION_AWS,monitor-0
+  become: yes
+  tasks:
+    - name: Authorize xxx
+      authorized_key:
+        user: "admin"
+        key: "ssh-rsa xxx"
+        state: "present"

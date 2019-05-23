@@ -1,0 +1,17 @@
+# ansible-playbook plays/maintain/nomad_stop_jobs.yml
+---
+- hosts: "{{ target | default('nomad-master-0') }}"
+  any_errors_fatal: true
+  become: yes
+
+  vars:
+    jobs_dir: "{{ root_dir }}/nomad/jobs"
+
+  tasks:
+    - name: stop the jobs
+      shell: >-
+        nomad stop {{ item.split('/')[1] }}
+        # nomad stop -purge {{ item.split('/')[1] }}
+      register: res
+      ignore_errors: yes
+      with_items: "{{ job | default(nomad_active_jobs) }}"

@@ -1,0 +1,17 @@
+---
+- hosts: "all:!bastion"
+  become: yes
+
+  tasks:
+    - debug:
+        msg: "inventory_hostname : {{ inventory_hostname }}" # by default with Ansible..
+
+    - debug:
+        msg: "prom_cluster_name : {{ prom_cluster_name }}"
+
+    - debug:
+        msg: "prom_role_name : {{ prom_role_name }}"
+
+    # # Magic Variables, and How To Access Information About Other Hosts
+    # - debug:
+    #     msg: "test : {{ ansible_play_hosts }}"
