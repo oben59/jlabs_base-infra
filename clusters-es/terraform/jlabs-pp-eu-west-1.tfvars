@@ -42,11 +42,11 @@ instances_consul_masters = {
 }
 
 es_prefix = "pp"
-project_hosted_zone_id = "Z7SKOO0O7M9HD"
+project_hosted_zone_id = "Z3L7UFTSQZTC8T"
 
 slack_webhook = "https://hooks.slack.com/services/xxx"
 
-bastion_default_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDoriW6fFu92Iamov9JV5gRIEfvlEnXDT7hjcb1UdHCJYxf/G/rbLVKggi3J9vmj15G+9QG75rrptSI2q9FWbQpqvo7W/KdbZFvu4iHKNvIwh5ZaSLbMmmWiz7ModZM3DnwDhvU8rKI15JR7+rzwPWa9RvW2nzAqIMld8qeTLvQXmEzOrjM4wrvp2uFsqXkniAfb4u6Il4uaAKdMwzLyJFIW8/3eV7j4ad9THD4Wsr8viWv+8ilD5B/pHkj0/EmfmyfbRYzLvUQhY7p7osGhJiqo8Tml1gTGRPP59J3jjjVQ0Bh8YHT5enb4b2mPQKgV2UpVru91KzacRUoGcRcP6jZ"
+bastion_default_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDiaRHUBTOBeYePmcjuHiwYGyQvhLmpQai1vOkk39dpTBbvKe7mtKq+0XsQU0sMYAf7Xkz58iFcHuA3efjPeaVSGiUKUwpHeUtJOeGGtTbjiE3m3MWXOBieGcACF1t5ricnLUYycPDIETSOTCefqSDYf+Ekf2JtZ7X/PBkKu7Rbx3alDvzdvWRnXemqx2avSw/Nhimcz5Eb8TxtDgukqOp6Y6r7JIPYxp70tJx96ekl+boeukQ+rPqFPVADS4onkLzYi1DWlj+W2eOsUHBm9+IcnLI8yIJpuOf/g9r4UOVmUzrYEwBIGiAsURtFp7JliEH9ydSBRqohbaBEw7H/ejlj jdx@jdx-wsc-laptop"
 
 bastion_ingress_cidr = [
   "78.192.19.2/32", # home

@@ -1,0 +1,9 @@
+
+[monitor]
+monitor-instance
+
+[consul-masters]
+consul-master-0
+
+[consul-servers-bootstrap:children]
+consul-masters
