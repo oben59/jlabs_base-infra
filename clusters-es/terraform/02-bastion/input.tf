@@ -15,7 +15,7 @@ data "aws_ami" "debian" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["debian-jessie-amd64-hvm-*"]
+    values = ["debian-stretch-hvm-x86_64-gp2-*"]
   }
   filter {
     name   = "virtualization-type"
@@ -31,8 +31,8 @@ packages:
 - git
 runcmd:
   - 'wget ${var.seed_public_repo_dir}'
-  - 'chmod u+x ./seed-debian-8.sh'
-  - 'for i in 1 2 3 4 5; do ./seed-debian-8.sh && break || sleep 2; done'
+  - 'chmod u+x ./seed-debian-9.sh'
+  - 'for i in 1 2 3 4 5; do ./seed-debian-9.sh && break || sleep 2; done'
 EOF
 }
 
