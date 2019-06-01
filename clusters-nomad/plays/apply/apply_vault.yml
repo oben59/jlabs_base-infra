@@ -1,8 +1,0 @@
----
-- hosts: logstore
-
-- hosts: "{{ target | default('nomad-servers-bootstrap') }}"
-  become: yes
-
-  roles:
-    - vault

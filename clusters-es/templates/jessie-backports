@@ -1,5 +1,0 @@
-#deb http://cloudfront.debian.net/debian jessie-backports main
-#deb-src http://cloudfront.debian.net/debian jessie-backports main
-
-deb http://httpredir.debian.org/debian jessie-backports main
-deb-src http://httpredir.debian.org/debian jessie-backports main

@@ -1,9 +1,0 @@
----
-- hosts: all
-  become: yes
-  tasks:
-    - name: Authorize Aurélien @Wescale
-      authorized_key:
-        user: "admin"
-        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeIGItuf+y7SnP3Fs46CiDu5kkyetVgVjrpPJHQxXQKYIQW2pWvc+L9Sm+32PfIh6piZeZUM3ALJ2FZ41MyzDX25WT5Aka5hkS/IhAaamkAFCxMGi0nffsispdRCis0vcNFG2eDmECLY2iXdSHe0GzeZ43lDMm0nbGrRVNMbHsihvbdMvV6lC8jsSN8SjSaikCqPAKHatOpLAdYV/vA7nHMMMf2YRlAXptn/Z7J/idxdC/G8lBL8jK+N4sPDunzpaHu/yqZK6gKjNhUd2UJtfD4bkodWgYidXz/coGEuhPUla7m9DxRIqrjBy50boe3HjyvydFOfPzZ0xLjlTpIxkH amaury@MacBook-Pro-de-Aurelien.local"
-        state: "absent"

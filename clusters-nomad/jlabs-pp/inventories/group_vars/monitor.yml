@@ -1,4 +1,0 @@
-prometheus_unarchive_dir: "/mnt/data"
-# prometheus_storage_retention: "120h0m0s"
-
-grafana_version: "4.6.3"

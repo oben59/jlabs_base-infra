@@ -1,9 +1,0 @@
----
-- hosts: BASTION_AWS,monitor-instance
-  become: yes
-  tasks:
-    - name: Authorize machine01
-      authorized_key:
-        user: "admin"
-        key: "ssh-rsa xxx"
-        state: "present"

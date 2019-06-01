@@ -1,5 +1,0 @@
----
-# in mhz, the cpu capacity reserved for each node
-#   total_cpu = cat /proc/cpuinfo | grep MHz
-#   x = (percentage_reserved * total_cpu) / 100
-nomad_client_reserved_cpu: 2046

@@ -1,9 +1,0 @@
----
-- hosts: "{{ target|default('all') }}"
-  become: yes
-  tasks:
-
-    - name: Define Apt Backports
-      template:
-        src: "../../templates/jessie-backports"
-        dest: "/etc/apt/sources.list.d/backports.list"

@@ -1,9 +1,0 @@
----
-- hosts: all
-  become: yes
-  tasks:
-    - name: Authorize VPS OVH Gateway
-      authorized_key:
-        user: "admin"
-        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLq+jA8tV65IvGG7Df0PAiHJ5xTRub8ag6NUThn2915Uei0VE1HX571hGvrE4ZhE7IvPRSiB3C7kw/7L8EBCN7wblpkrNDjBOGMr9Kgc/J46dQNA3fky/ZLsiY4WYoLqcTlA73pF9y+9JDIHapvMsc3kURaUk5PqirpdP97Zx0z/Xn4h9fPn1b8ShhlxD5kFVSzbrHgk5t1j/2nJRbeycc2v97/TEHxU1CBfV2uU5rP8WJDHM3yiZmZOzazaDGSCnBwJ/HE8hs7vf9uXoxs1TutRWKs+EEpQrqWkaJX8Xi+QZBSKbsVM3fm9+8I8P55UvvCpdhX+RPFydjGJxavRB3"
-        state: "present"
