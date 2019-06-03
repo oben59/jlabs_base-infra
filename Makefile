@@ -5,9 +5,9 @@ OWNER=jlabs
 REGION=eu-west-1
 
 help:
-	$(info e.g. "make tf-plan-pp LAYER_PATH=001-vpc" )
+	$(info e.g. "make tf-plan-aws-pp LAYER_PATH=001-vpc" )
 
-tf-init:
+tf-init-aws:
 	cd aws/terraform/$(LAYER_PATH)/; \
 	terraform init \
 		-backend-config "region=$(REGION)" \
@@ -16,23 +16,23 @@ tf-init:
 		-backend-config "key=$(LAYER_PATH).tfstate" \
 		-force-copy
 
-tf-plan: tf-init
+tf-plan-aws: tf-init-aws
 	cd aws/terraform/$(LAYER_PATH)/; \
 	terraform plan -var-file ../../configs/$(OWNER)-$(ENV)-aws-$(LAYER_PATH).tfvars
 
-tf-apply: tf-init
+tf-apply-aws: tf-init-aws
 	cd aws/terraform/$(LAYER_PATH)/; \
 	terraform apply -var-file ../../configs/$(OWNER)-$(ENV)-aws-$(LAYER_PATH).tfvars
 
-tf-destroy: tf-init
+tf-destroy-aws: tf-init-aws
 	cd aws/terraform/$(LAYER_PATH)/; \
 	terraform destroy -var-file ../../configs/$(OWNER)-$(ENV)-aws-$(LAYER_PATH).tfvars
 
-tf-plan-pp: ENV=pp
-tf-plan-pp: tf-plan
+tf-plan-aws-pp: ENV=pp
+tf-plan-aws-pp: tf-plan-aws
 
-tf-apply-pp: ENV=pp
-tf-apply-pp: tf-apply
+tf-apply-aws-pp: ENV=pp
+tf-apply-aws-pp: tf-apply-aws
 
-tf-destroy-pp: ENV=pp
-tf-destroy-pp: tf-destroy
+tf-destroy-aws-pp: ENV=pp
+tf-destroy-aws-pp: tf-destroy-aws
