@@ -2,7 +2,7 @@ resource "aws_vpc" "vpc" {
   cidr_block = "${var.vpc_cidr}"
   enable_dns_hostnames = true
   enable_dns_support = true
-  tags {
+  tags = {
     Name = "${var.owner}-${var.env}-vpc1"
   }
 }
@@ -19,7 +19,7 @@ resource "aws_route_table" "main" {
     gateway_id = "${aws_internet_gateway.gateway.id}"
   }
 
-  tags {
+  tags = {
     Name = "${var.owner}-${var.env}-vpc1-rt"
   }
 }

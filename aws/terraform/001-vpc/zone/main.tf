@@ -3,7 +3,7 @@ resource "aws_subnet" "public_subnet" {
   vpc_id = "${var.vpc_id}"
   cidr_block = "${var.public_subnet_cidr}"
   availability_zone = "${var.availability_zone}"
-  tags {
+  tags = {
     Name = "${var.vpc_name}-${var.availability_zone}-public"
     Description = "${var.vpc_name} public subnet in AZ ${var.availability_zone}"
   }
