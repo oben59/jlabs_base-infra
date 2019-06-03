@@ -17,6 +17,3 @@ output "public_subnet_ids" {
   ]
 }
 
-terraform {
-  backend "s3" {}
-}
