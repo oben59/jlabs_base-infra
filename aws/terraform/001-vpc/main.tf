@@ -30,7 +30,7 @@ resource "aws_main_route_table_association" "main" {
 }
 
 module "zone_a" {
-  source = "zone"
+  source = "./zone"
   vpc_id = "${aws_vpc.vpc.id}"
   vpc_name = "${var.owner}-${var.env}-vpc1"
   availability_zone = "${var.region}a"
@@ -39,7 +39,7 @@ module "zone_a" {
 }
 
 module "zone_b" {
-  source = "zone"
+  source = "./zone"
   vpc_id = "${aws_vpc.vpc.id}"
   vpc_name = "${var.owner}-${var.env}-vpc1"
   availability_zone = "${var.region}b"
