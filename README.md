@@ -1,2 +1,2 @@
-# infra-jdxlabs
+# jlabs_base-infra
 Infrastructure code for jdxlabs applications
