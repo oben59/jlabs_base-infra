@@ -1,9 +1,11 @@
 variable "owner" {}
 variable "env" {}
 variable "region" {}
+
 variable "instance_type" {
   default = "t2.nano"
 }
+variable "ingress_cidr" {}
 
 data "aws_ami" "debian" {
   most_recent = true
@@ -31,9 +33,9 @@ EOF
 
 data "terraform_remote_state" "vpc" {
   backend = "s3"
-  config {
-    bucket = "${var.owner}-${var.env}-tfstate"
-    key = " 001-vpc.tfstate"
+  config = {
+    bucket = "${var.owner}-${var.env}-${var.region}-tfstate"
+    key = "001-vpc.tfstate"
     region = "${var.region}"
   }
 }

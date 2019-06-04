@@ -28,8 +28,8 @@ resource "aws_autoscaling_group" "asg" {
   health_check_type = "EC2"
   force_delete = true
   vpc_zone_identifier = [
-    "${data.terraform_remote_state.vpc.public_subnet_id_a}",
-    "${data.terraform_remote_state.vpc.public_subnet_id_b}"
+    "${data.terraform_remote_state.vpc.outputs.public_subnet_id_a}",
+    "${data.terraform_remote_state.vpc.outputs.public_subnet_id_b}"
   ]
   launch_configuration = "${aws_launch_configuration.launch_conf.name}"
   lifecycle {
@@ -44,7 +44,7 @@ resource "aws_autoscaling_group" "asg" {
 
 resource "aws_security_group" "asg_ingress" {
   name_prefix = "${var.owner}-${var.env}-${var.region}-asg-ingress"
-  vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
+  vpc_id = "${data.terraform_remote_state.vpc.outputs.vpc_id}"
   ingress {
     from_port = 22
     to_port = 22

@@ -22,11 +22,11 @@ tf-plan-aws: tf-init-aws
 
 tf-apply-aws: tf-init-aws
 	cd aws/terraform/$(LAYER_PATH)/; \
-	terraform apply -var-file ../../configs/$(OWNER)-$(ENV)-aws-$(LAYER_PATH).tfvars
+	terraform apply -var-file ../../configs/$(OWNER)-$(ENV)-aws-$(LAYER_PATH).tfvars -auto-approve
 
 tf-destroy-aws: tf-init-aws
 	cd aws/terraform/$(LAYER_PATH)/; \
-	terraform destroy -var-file ../../configs/$(OWNER)-$(ENV)-aws-$(LAYER_PATH).tfvars
+	terraform destroy -var-file ../../configs/$(OWNER)-$(ENV)-aws-$(LAYER_PATH).tfvars -auto-approve
 
 tf-plan-aws-pp: ENV=pp
 tf-plan-aws-pp: tf-plan-aws
