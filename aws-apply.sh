@@ -2,5 +2,5 @@
 
 set -e
 
-make tf-apply-aws-pp LAYER_PATH=001-vpc
-make tf-apply-aws-pp LAYER_PATH=002-asg
+make tf-apply-aws-pp LAYER=001-vpc
+make tf-apply-aws-pp LAYER=002-asg

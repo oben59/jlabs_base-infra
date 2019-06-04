@@ -2,5 +2,5 @@
 
 set -e
 
-make tf-destroy-aws-pp LAYER_PATH=002-asg
-make tf-destroy-aws-pp LAYER_PATH=001-vpc
+make tf-destroy-aws-pp LAYER=002-asg
+make tf-destroy-aws-pp LAYER=001-vpc
