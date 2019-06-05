@@ -1,5 +1,4 @@
 ---
-# cf. https://github.com/weaveworks/eksctl/tree/master/examples
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
@@ -18,4 +17,4 @@ nodeGroups:
     minSize: 1
     maxSize: 2
     ssh:
-      allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key
+      allow: true
