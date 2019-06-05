@@ -8,6 +8,7 @@ CONFIG_PATH=../../configs
 help:
 	$(info e.g. "make tf-plan-aws-pp LAYER=001-vpc" )
 
+
 # aws terraform
 
 tf-init-aws:
@@ -46,14 +47,31 @@ tf-apply-aws-pp: tf-apply-aws
 tf-destroy-aws-pp: ENV=pp
 tf-destroy-aws-pp: tf-destroy-aws
 
-# aws eks
 
-tf-plan-aws: tf-init-aws
-	terraform plan \
-		-var-file $(CONFIG_PATH)/$(OWNER)-$(ENV)/terraform/commons.tfvars \
-		-var-file $(CONFIG_PATH)/$(OWNER)-$(ENV)/terraform/$(LAYER).tfvars
+# eks
+
+eks-create:
+	eksctl create cluster \
+		-f ./aws/configs/$(OWNER)-$(ENV)/eks/cluster-vars.yml
+
+eks-update:
+	eksctl update cluster \
+		-f ./aws/configs/$(OWNER)-$(ENV)/eks/cluster-vars.yml
+
+eks-delete:
+	eksctl delete cluster \
+		-f ./aws/configs/$(OWNER)-$(ENV)/eks/cluster-vars.yml
+
+eks-create-pp: ENV=pp
+eks-create-pp: eks-create
+
+eks-update-pp: ENV=pp
+eks-update-pp: eks-create
+
+eks-delete-pp: ENV=pp
+eks-delete-pp: eks-create
 
 
-# gcp gke
+# gke
 
 # TODO
