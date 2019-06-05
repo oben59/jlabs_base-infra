@@ -66,10 +66,10 @@ eks-create-pp: ENV=pp
 eks-create-pp: eks-create
 
 eks-update-pp: ENV=pp
-eks-update-pp: eks-create
+eks-update-pp: eks-update
 
 eks-delete-pp: ENV=pp
-eks-delete-pp: eks-create
+eks-delete-pp: eks-delete
 
 
 # gke
