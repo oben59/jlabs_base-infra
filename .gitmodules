@@ -1,0 +1,3 @@
+[submodule "config"]
+	path = config
+	url = git@github.com:jdxlabs/jlabs_base-infra-config.git
