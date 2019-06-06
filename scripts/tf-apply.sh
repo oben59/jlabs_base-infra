@@ -20,8 +20,8 @@ done
 
 layersDir=./providers/$provider/terraform
 
-for layer in $(ls -r "$layersDir"); do
-    make tf-destroy-$provider-$env LAYER=$layer
+for layer in $(ls "$layersDir"); do
+    make tf-apply-$provider-$env LAYER=$layer
 done
 
-./clean.sh
+./scripts/clean.sh
